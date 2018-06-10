@@ -1,0 +1,23 @@
+#!/bin/bash
+SSID=$1     # The SSID to extract RSSI from
+SAMPLES=$2  # The number of times to sample the RSSI
+
+# USAGE
+# getRSSI DIRECT-EB-HP 10
+
+COUNTER=0
+
+while [  $COUNTER -lt $SAMPLES ]; do
+
+    cmd="sudo iw wlan0 scan | egrep '$SSID|signal' | egrep -B1 '$SSID' | grep signal"
+    RSSI=`eval "$cmd" 2> /dev/null`
+    
+    if [ $? -eq 0 ]; then
+    
+        RSSI=($RSSI)
+        echo ${RSSI[1]}
+        let COUNTER=COUNTER+1 
+
+    fi
+
+done
